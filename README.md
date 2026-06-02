@@ -133,6 +133,23 @@ You can also confirm macOS accepts the synthetic events as real activity:
 pmset -g assertions | grep -i jigglebar   # shows the active assertion/tickle
 ```
 
+A healthy run looks like a sawtooth: the idle time climbs toward your interval,
+then drops back to ~0 on every nudge, and **never grows unbounded**. Example from a
+~14-minute hands-off run at a 60 s interval — idle never exceeded ~37 s and the
+Slack presence dot stayed green the whole time, well past the 10-minute away
+threshold:
+
+```
+07:56:17  idle=36.0s
+07:56:48  idle=6.0s     <- nudge reset it
+07:57:18  idle=36.1s
+07:57:48  idle=6.1s     <- nudge reset it
+...                      (max idle over 27 samples = 37.2s)
+```
+
+If instead the idle time keeps climbing past your interval, the events are being
+dropped — re-check the stale-trust fix above.
+
 ---
 
 ## License
